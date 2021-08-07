@@ -12,21 +12,23 @@ import pers.syq.todo.appright.Card;
 
 import java.awt.*;
 import java.io.*;
-import java.net.URL;
 
 
 public class Objectios {
-    private static final Objectios objectios = new Objectios();
     private Objectios(){
-
     }
 
     public static Display readToDoList() {
-        URL url = objectios.getClass().getResource("/todolist.xml");
         Display display = new Display("ToDoList");
+        String dir = System.getProperty("user.dir");
+        String filename = dir+File.separator+"todolist.xml";
+        File file = new File(filename);
+        if(!file.exists()){
+            return display;
+        }
         SAXReader sr = new SAXReader();
         try{
-            Document doc = sr.read(url);
+            Document doc = sr.read(file);
             Element toDoLists = doc.getRootElement();
             for(Element list:toDoLists.elements()){
                 ToDoList l1 = new ToDoList(display);
@@ -61,7 +63,6 @@ public class Objectios {
                 display.getTodolist().add(l1);
             }
             display.initListAndCard();
-
         } catch (DocumentException e) {
             e.printStackTrace();
         }
@@ -69,7 +70,8 @@ public class Objectios {
     }
 
     public static void writeToDoList(Display display)  {
-        String filename = objectios.getClass().getResource("/todolist.xml").getPath();
+        String dir = System.getProperty("user.dir");
+        String filename = dir+File.separator+"todolist.xml";
         File file = new File(filename);
         XMLWriter xw = null;
         try{
